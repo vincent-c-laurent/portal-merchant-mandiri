@@ -15,11 +15,13 @@ import {
   CardIcon,
   QrisIcon,
   ChevronDownIcon,
+  FilePdfIcon,
 } from "@/components/icons";
 import { DonutChart } from "@/components/charts/DonutChart";
 import { DownloadButton } from "@/components/DownloadButton";
 import { formatRupiah, formatRupiahCompact, formatPercent } from "@/lib/format";
 import { downloadFeeReport } from "@/lib/export";
+import { downloadFeePdf } from "@/lib/pdf";
 import {
   FEE_CATEGORIES,
   type FeeKey,
@@ -56,7 +58,7 @@ export default function CalculatorPage() {
   const [custPerDay, setCustPerDay] = useState(0);
   const [daysPerMonth, setDaysPerMonth] = useState(26);
 
-  const [downloading, setDownloading] = useState(false);
+  const [busy, setBusy] = useState<null | "xlsx" | "pdf">(null);
 
   const mix = { kartuPct, debitPct, debitOnPct, kreditOnPct };
   const setRate = (key: FeeKey, n: number) =>
@@ -80,12 +82,13 @@ export default function CalculatorPage() {
   const estVolume = avgTicket * custPerDay * daysPerMonth;
   const ready = volume > 0;
 
-  const handleDownload = async () => {
-    setDownloading(true);
+  const handleExport = async (kind: "xlsx" | "pdf") => {
+    setBusy(kind);
     try {
-      await downloadFeeReport({ volume, mix, mandiriRates: rates });
+      const data = { volume, mix, mandiriRates: rates };
+      await (kind === "xlsx" ? downloadFeeReport(data) : downloadFeePdf(data));
     } finally {
-      setDownloading(false);
+      setBusy(null);
     }
   };
 
@@ -308,7 +311,22 @@ export default function CalculatorPage() {
             </div>
           </div>
 
-          <DownloadButton onClick={handleDownload} loading={downloading} />
+          <div className="grid grid-cols-2 gap-3">
+            <DownloadButton
+              onClick={() => handleExport("xlsx")}
+              loading={busy === "xlsx"}
+              disabled={busy !== null}
+              label="Unduh .xlsx"
+            />
+            <DownloadButton
+              onClick={() => handleExport("pdf")}
+              loading={busy === "pdf"}
+              disabled={busy !== null}
+              variant="secondary"
+              label="Unduh PDF"
+              icon={<FilePdfIcon className="h-4 w-4" />}
+            />
+          </div>
         </>
       )}
     </main>

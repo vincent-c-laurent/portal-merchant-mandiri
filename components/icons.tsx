@@ -184,6 +184,16 @@ export function DownloadIcon(props: IconProps) {
   );
 }
 
+export function FilePdfIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+      <path d="M14 3v5h5" />
+      <path d="M8.5 17v-3.5h1a1.1 1.1 0 0 1 0 2.2h-1M13 17v-3.5h1.6M13 15.3h1.3M16.8 13.5h1.7M17.2 13.5V17" />
+    </svg>
+  );
+}
+
 export function LockIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>

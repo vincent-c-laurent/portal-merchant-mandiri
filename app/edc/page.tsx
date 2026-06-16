@@ -3,10 +3,11 @@
 import { useMemo, useState } from "react";
 import { PageHeading } from "@/components/PageHeading";
 import { StepCard, Label, CurrencyInput, UnitInput, PercentSlider } from "@/components/ui";
-import { LayersIcon, PlusIcon, TrashIcon, TrophyIcon } from "@/components/icons";
+import { LayersIcon, PlusIcon, TrashIcon, TrophyIcon, FilePdfIcon } from "@/components/icons";
 import { DownloadButton } from "@/components/DownloadButton";
 import { formatRupiah, formatRupiahCompact, formatPercent } from "@/lib/format";
 import { downloadEdcReport } from "@/lib/export";
+import { downloadEdcPdf } from "@/lib/pdf";
 import {
   FEE_CATEGORIES,
   type FeeKey,
@@ -42,7 +43,7 @@ export default function EdcPage() {
   const [debitOnPct, setDebitOnPct] = useState(DEFAULT_MIX.debitOnPct);
   const [kreditOnPct, setKreditOnPct] = useState(DEFAULT_MIX.kreditOnPct);
   const [banks, setBanks] = useState<Bank[]>(initialBanks);
-  const [downloading, setDownloading] = useState(false);
+  const [busy, setBusy] = useState<null | "xlsx" | "pdf">(null);
 
   const mix = { kartuPct, debitPct, debitOnPct, kreditOnPct };
 
@@ -104,16 +105,17 @@ export default function EdcPage() {
   const showTie = ready && results.mandiriWins && results.saving === 0;
   const showWorse = ready && !results.mandiriWins;
 
-  const handleDownload = async () => {
-    setDownloading(true);
+  const handleExport = async (kind: "xlsx" | "pdf") => {
+    setBusy(kind);
     try {
-      await downloadEdcReport({
+      const data = {
         volume,
         mix,
         banks: banks.map((b) => ({ name: b.name, rates: b.rates })),
-      });
+      };
+      await (kind === "xlsx" ? downloadEdcReport(data) : downloadEdcPdf(data));
     } finally {
-      setDownloading(false);
+      setBusy(null);
     }
   };
 
@@ -419,7 +421,22 @@ export default function EdcPage() {
                 </div>
               </div>
 
-              <DownloadButton onClick={handleDownload} loading={downloading} />
+              <div className="grid grid-cols-2 gap-3">
+                <DownloadButton
+                  onClick={() => handleExport("xlsx")}
+                  loading={busy === "xlsx"}
+                  disabled={busy !== null}
+                  label="Unduh .xlsx"
+                />
+                <DownloadButton
+                  onClick={() => handleExport("pdf")}
+                  loading={busy === "pdf"}
+                  disabled={busy !== null}
+                  variant="secondary"
+                  label="Unduh PDF"
+                  icon={<FilePdfIcon className="h-4 w-4" />}
+                />
+              </div>
             </>
           )}
         </>

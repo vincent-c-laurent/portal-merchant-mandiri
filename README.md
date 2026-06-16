@@ -3,7 +3,7 @@
 A small, fully-static **Next.js + TypeScript + Tailwind** toolkit for merchant-acquiring
 sales in Bank Mandiri's navy + gold identity. The story is **merchant savings**: show a
 prospect how much *lower* their fees are with Mandiri vs their current provider. Marketing-style
-landing page plus two tools, a persistent tab navbar, and **styled `.xlsx` report export**.
+landing page plus two tools, a persistent tab navbar, and **styled `.xlsx` + PDF report export**.
 
 - **Branch:** KCP Surabaya Pemuda · Area Transaction & Funding
 - **Creator:** Kanaya Rifa Azzahra · Officer Development Program Batch 315
@@ -12,16 +12,17 @@ landing page plus two tools, a persistent tab navbar, and **styled `.xlsx` repor
 
 - **Landing page** (`/`) — marketing-style stacked sections: savings-focused hero, stats strip,
   alternating feature rows, "how it works" steps, and a contact CTA.
-- **Kalkulator Fee** (`/calculator`) — compares the merchant's MDR cost **Mandiri vs provider
-  lain** (Kartu/QRIS split). Output is framed as **penghematan** (savings): a green savings hero,
-  a "% lebih hemat" **donut**, side-by-side cost bars, and a **1 / 3 / 6 / 12-month projection**.
+- **Kalkulator Fee** (`/calculator`) — the **MDR fee a merchant pays Mandiri**, detailed **per
+  category** (Debit/Kredit On-Us/Off-Us + QRIS) from a 4-level Kartu/QRIS split. Editable tariffs,
+  a total-fee hero, a **composition donut**, and a **1 / 3 / 6 / 12-month projection**. No comparison.
 - **Perbandingan Biaya EDC** (`/edc`) — wide **side-by-side benchmark** (rental + MDR + per-trx
   fee). **Mandiri is locked as the first/reference column**; add 1–3 competitors. Highlights the
   cheapest, shows **savings vs Mandiri** per provider, a sorted comparison bar chart, and a
   savings projection.
-- **Excel export** — both tools export a beautifully formatted **`.xlsx`** (ExcelJS) with the
-  Mandiri logo, branch, creator (Kanaya), today's date, savings, and the 1/3/6/12-month
-  projection. ExcelJS is dynamically imported so it stays out of the initial bundle.
+- **Report export** — both tools export a beautifully formatted **`.xlsx`** (ExcelJS) **and PDF**
+  (jsPDF + jspdf-autotable) with the Mandiri logo, branch, creator (Kanaya), today's date, the
+  per-category breakdown, and the 1/3/6/12-month projection. Both libraries are dynamically
+  imported so they stay out of the initial bundle.
 - **Persistent tool tabs** in the navbar (desktop + mobile) for fast page switching, plus a
   WhatsApp consultation CTA.
 - Responsive (mobile / tablet / desktop). All math runs client-side; no backend, no data leaves
@@ -46,14 +47,14 @@ app/
   layout.tsx          # shell: Navbar + Footer, metadata
   globals.css         # tailwind + slider/input styling
   page.tsx            # landing page (hero, features, how-it-works, contact)
-  calculator/page.tsx # Kalkulator Fee: Mandiri vs provider lain savings + projection
+  calculator/page.tsx # Kalkulator Fee: Mandiri per-category fee breakdown + projection
   edc/page.tsx        # Perbandingan Biaya EDC: side-by-side benchmark + savings
 components/
   Brand.tsx           # logo badge + decorative gold wave
   Navbar.tsx          # sticky navbar with persistent tool tabs
   Footer.tsx          # slim footer
   PageHeading.tsx     # sub-page heading (back + icon + title)
-  DownloadButton.tsx  # shared "Unduh Laporan (.xlsx)" button
+  DownloadButton.tsx  # shared export button (primary .xlsx / secondary PDF variants)
   charts/
     DonutChart.tsx    # lightweight SVG donut (no deps)
   landing/
@@ -64,6 +65,7 @@ lib/
   config.ts           # branch + creator details (single source of truth)
   format.ts           # Rupiah / percent / date helpers
   export.ts           # styled .xlsx report builders (ExcelJS, lazy-loaded)
+  pdf.ts              # styled PDF report builders (jsPDF + autotable, lazy-loaded)
 ```
 
 ## Run & verify
