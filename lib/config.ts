@@ -16,9 +16,9 @@ export const CREATOR = {
   name: "Kanaya Rifa Azzahra",
   initials: "KA",
   program: "Officer Development Program Batch 315",
-  role: "Relationship Officer",
-  whatsapp: "6287777616984",
-  whatsappDisplay: "+62 877-7761-6984",
+  role: "ODP",
+  whatsapp: "6281927111103",
+  whatsappDisplay: "+62 819-2711-1103",
 };
 
 // The actual tools (separate routes) — shown as persistent tabs in the navbar.

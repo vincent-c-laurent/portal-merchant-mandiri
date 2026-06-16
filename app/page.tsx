@@ -199,7 +199,7 @@ export default function HomePage() {
                   Butuh bantuan akuisisi merchant?
                 </h2>
                 <p className="mt-3 text-white/70">
-                  Hubungi langsung Relationship Officer kami untuk konsultasi,
+                  Hubungi langsung ODP kami untuk konsultasi,
                   penawaran, dan pendampingan onboarding merchant.
                 </p>
                 <div className="mt-6 flex items-center gap-3">
